@@ -15,17 +15,16 @@ def process_image_base64(image_base64):
 
     try:
         if "A" in img.getbands():
-            print("Found alpha channel")
+            # print("Found alpha channel")
             mask = np.array(img.getchannel("A")).astype(np.float32) / 255.0
             mask = 1.0 - torch.from_numpy(mask)
         else:
-            print("No alpha channel found")
+            # print("No alpha channel found")
             mask = torch.zeros((img.height, img.width), dtype=torch.float32, device="cpu")
 
         img = img.convert("RGB")
         img_array = np.array(img).astype(np.float32) / 255.0
         img_tensor = torch.from_numpy(img_array).unsqueeze(0)
-        print(img_tensor.shape)
     except Exception as e:
         print(f"Error processing the image: {e}")
         return None, None
@@ -63,7 +62,6 @@ class LoadImagesBase64:
 
         if len(image_list) == 0:
             raise FileNotFoundError("No images could be loaded from the provided Base64 string.")
-        print(torch.cat(image_list, dim=0).shape)
 
         return (torch.cat(image_list, dim=0), torch.stack(mask_list, dim=0))
 
